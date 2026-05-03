@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hats Off Animation — The Drawing Folk</title>
+  <meta name="description" content="Kampala-based animation studio delivering world-class African animation. From Kampala to the world, one frame at a time." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'oxford': '#051223',
+            'oxford-light': '#0a1f3a',
+            'saffron': '#FCAF45',
+            'saffron-light': '#fdc870',
+            'saffron-dark': '#e89a2a',
+            'offwhite': '#F5F5F5',
+          },
+          fontFamily: {
+            'mont': ['Montserrat', 'sans-serif'],
+          },
+          animation: {
+            'spotlight': 'spotlight 8s ease-in-out infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'grain': 'grain 0.4s steps(1) infinite',
+            'fade-up': 'fadeUp 0.8s ease forwards',
+            'fade-in': 'fadeIn 1s ease forwards',
+            'slide-right': 'slideRight 0.8s ease forwards',
+          },
+          keyframes: {
+            spotlight: {
+              '0%, 100%': { opacity: '0.9', transform: 'scale(1) translateY(0px)' },
+              '50%': { opacity: '1', transform: 'scale(1.03) translateY(-6px)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-12px)' },
+            },
+            grain: {
+              '0%, 100%': { transform: 'translate(0,0)' },
+              '10%': { transform: 'translate(-2%,-3%)' },
+              '20%': { transform: 'translate(1%,2%)' },
+              '30%': { transform: 'translate(-3%,1%)' },
+              '40%': { transform: 'translate(2%,-1%)' },
+              '50%': { transform: 'translate(-1%,3%)' },
+              '60%': { transform: 'translate(3%,-2%)' },
+              '70%': { transform: 'translate(-2%,1%)' },
+              '80%': { transform: 'translate(1%,-3%)' },
+              '90%': { transform: 'translate(-1%,2%)' },
+            },
+            fadeUp: {
+              from: { opacity: '0', transform: 'translateY(40px)' },
+              to: { opacity: '1', transform: 'translateY(0)' },
+            },
+            fadeIn: {
+              from: { opacity: '0' },
+              to: { opacity: '1' },
+            },
+            slideRight: {
+              from: { opacity: '0', transform: 'translateX(-40px)' },
+              to: { opacity: '1', transform: 'translateX(0)' },
+            },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #051223;
+      color: #F5F5F5;
+      overflow-x: hidden;
+    }
+
+    /* ── Grain Texture Overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: -50%;
+      width: 200%;
+      height: 200%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.035;
+      pointer-events: none;
+      z-index: 999;
+      animation: grain 0.4s steps(1) infinite;
+    }
+
+    /* ── Spotlight SVG Beam ── */
+    .spotlight-beam {
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 700px;
+      background: conic-gradient(from 180deg at 50% 0%, transparent 75deg, rgba(252,175,69,0.18) 90deg, rgba(252,175,69,0.28) 95deg, rgba(252,175,69,0.18) 100deg, transparent 115deg);
+      pointer-events: none;
+      animation: spotlight 8s ease-in-out infinite;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      transition: background 0.4s, backdrop-filter 0.4s, padding 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(5, 18, 35, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(252, 175, 69, 0.15);
+    }
+
+    .nav-link {
+      position: relative;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(245,245,245,0.75);
+      transition: color 0.3s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 1px;
+      background: #FCAF45;
+      transition: width 0.3s;
+    }
+    .nav-link:hover { color: #FCAF45; }
+    .nav-link:hover::after { width: 100%; }
+
+    /* ── Hero ── */
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #FCAF45;
+    }
+
+    .hero-headline {
+      font-size: clamp(2.8rem, 7vw, 7rem);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      color: #F5F5F5;
+    }
+
+    .hero-headline .accent {
+      color: #FCAF45;
+      font-style: italic;
+    }
+
+    .hero-tagline {
+      font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+      font-weight: 300;
+      line-height: 1.8;
+      color: rgba(245,245,245,0.7);
+      max-width: 480px;
+    }
+
+    /* ── Section Headers ── */
+    .section-eyebrow {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #FCAF45;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    /* ── Gold CTA Button ── */
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 2rem;
+      background: #FCAF45;
+      color: #051223;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+    }
+    .btn-gold::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #051223;
+      transform: translateX(-101%);
+      transition: transform 0.35s cubic-bezier(0.76,0,0.24,1);
+    }
+    .btn-gold:hover { color: #FCAF45; }
+    .btn-gold:hover::before { transform: translateX(0); }
+    .btn-gold span { position: relative; z-index: 1; }
+    .btn-gold svg { position: relative; z-index: 1; transition: transform 0.3s; }
+    .btn-gold:hover svg { transform: translateX(4px); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.85rem 1.8rem;
+      background: transparent;
+      color: #FCAF45;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border: 1px solid rgba(252,175,69,0.5);
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .btn-outline:hover {
+      border-color: #FCAF45;
+      background: rgba(252,175,69,0.08);
+    }
+
+    /* ── Cards ── */
+    .value-card {
+      border: 1px solid rgba(252,175,69,0.15);
+      background: rgba(255,255,255,0.02);
+      padding: 2.5rem;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    .value-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 0;
+      background: #FCAF45;
+      transition: height 0.5s cubic-bezier(0.76,0,0.24,1);
+    }
+    .value-card:hover {
+      background: rgba(252,175,69,0.04);
+      border-color: rgba(252,175,69,0.35);
+      transform: translateY(-4px);
+    }
+    .value-card:hover::before { height: 100%; }
+
+    .value-number {
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: rgba(252,175,69,0.12);
+      line-height: 1;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+
+    .service-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.2rem;
+      padding: 1.4rem 0;
+      border-bottom: 1px solid rgba(252,175,69,0.1);
+      transition: all 0.3s;
+    }
+    .service-item:last-child { border-bottom: none; }
+    .service-item:hover { padding-left: 0.5rem; }
+    .service-item:hover .service-dot { background: #FCAF45; transform: scale(1.4); }
+
+    .service-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(252,175,69,0.4);
+      flex-shrink: 0;
+      margin-top: 6px;
+      transition: all 0.3s;
+    }
+
+    /* ── Divider ── */
+    .gold-divider {
+      width: 60px;
+      height: 3px;
+      background: #FCAF45;
+      margin: 1.5rem 0;
+    }
+
+    /* ── Marquee ── */
+    .marquee-track {
+      display: flex;
+      animation: marquee 20s linear infinite;
+      width: max-content;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .marquee-item {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 0 2.5rem;
+      color: rgba(252,175,69,0.6);
+      white-space: nowrap;
+    }
+    .marquee-dot {
+      color: #FCAF45;
+      padding: 0 0.3rem;
+    }
+
+    /* ── Mission/Vision Block ── */
+    .mv-card {
+      background: linear-gradient(135deg, rgba(252,175,69,0.07) 0%, transparent 70%);
+      border: 1px solid rgba(252,175,69,0.2);
+      padding: 3rem;
+      position: relative;
+    }
+    .mv-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 80px; height: 80px;
+      background: rgba(252,175,69,0.06);
+      clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    }
+
+    /* ── Impact Section ── */
+    .impact-bg {
+      background: linear-gradient(160deg, #0a1f3a 0%, #051223 60%);
+      position: relative;
+    }
+    .impact-bg::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #FCAF45, transparent);
+    }
+
+    .stat-block {
+      border-left: 3px solid #FCAF45;
+      padding-left: 1.5rem;
+    }
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 900;
+      color: #FCAF45;
+      line-height: 1;
+    }
+
+    /* ── Form ── */
+    .form-field {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(252,175,69,0.2);
+      color: #F5F5F5;
+      padding: 0.9rem 1.2rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 400;
+      transition: all 0.3s;
+      outline: none;
+    }
+    .form-field:focus {
+      border-color: #FCAF45;
+      background: rgba(252,175,69,0.05);
+    }
+    .form-field::placeholder { color: rgba(245,245,245,0.35); }
+
+    .form-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245,245,245,0.5);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    select.form-field option {
+      background: #051223;
+      color: #F5F5F5;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid rgba(252,175,69,0.15);
+    }
+
+    .footer-link {
+      color: rgba(245,245,245,0.5);
+      font-size: 0.78rem;
+      transition: color 0.3s;
+      text-decoration: none;
+    }
+    .footer-link:hover { color: #FCAF45; }
+
+    /* ── Scroll Reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(35px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ── Mobile Menu ── */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      background: rgba(5,18,35,0.98);
+      z-index: 99;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+    .mobile-menu.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .mobile-nav-link {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #F5F5F5;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .mobile-nav-link:hover { color: #FCAF45; }
+
+    /* ── Hamburger ── */
+    .hamburger { cursor: pointer; }
+    .ham-bar {
+      display: block;
+      width: 26px; height: 2px;
+      background: #F5F5F5;
+      transition: all 0.3s;
+      transform-origin: center;
+    }
+    .hamburger.open .ham-bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .hamburger.open .ham-bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.open .ham-bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+    /* ── Decorative diagonal border ── */
+    .diagonal-border {
+      position: relative;
+    }
+    .diagonal-border::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, #FCAF45, transparent);
+    }
+
+    /* ── Horizontal rule gold ── */
+    .hr-gold {
+      border: none;
+      border-top: 1px solid rgba(252,175,69,0.2);
+      margin: 0;
+    }
+
+    /* ── Partner open cards ── */
+    .open-card {
+      background: rgba(252,175,69,0.04);
+      border: 1px solid rgba(252,175,69,0.18);
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.3s;
+    }
+    .open-card:hover {
+      background: rgba(252,175,69,0.09);
+      border-color: rgba(252,175,69,0.4);
+      transform: translateX(6px);
+    }
+
+    /* ── Spotlight logo icon ── */
+    .logo-icon {
+      display: inline-block;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @media (max-width: 768px) {
+      .hero-headline { font-size: clamp(2.2rem, 10vw, 3.5rem); }
+      .section-title { font-size: clamp(1.8rem, 7vw, 2.5rem); }
+    }
+  </style>
+</head>
+<body class="font-mont">
+
+  <!-- ══════════════════════════ NAVIGATION ══════════════════════════ -->
+  <nav id="navbar" class="py-5 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-3 no-underline group">
+        <svg class="logo-icon" width="36" height="42" viewBox="0 0 36 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 0L36 28H0L18 0Z" fill="#FCAF45" opacity="0.9"/>
+          <ellipse cx="18" cy="29" rx="11" ry="4" fill="rgba(245,245,245,0.15)"/>
+          <rect x="13" y="24" width="10" height="8" rx="1" fill="#051223" opacity="0.95"/>
+          <rect x="14.5" y="24" width="1.5" height="8" fill="#FCAF45" opacity="0.4"/>
+          <rect x="17" y="24" width="1.5" height="8" fill="#FCAF45" opacity="0.4"/>
+          <ellipse cx="18" cy="22" rx="5" ry="3.5" fill="#051223" opacity="0.9"/>
+          <path d="M15 19 C15 16 18 14 18 14 C18 14 21 16 21 19" stroke="#051223" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M15.5 19.5 C13 18 12 14 13 12" stroke="#051223" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path d="M20.5 19.5 C23 18 24 14 23 12" stroke="#051223" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <div style="font-size: 0.9rem; font-weight: 900; letter-spacing: 0.05em; line-height: 1; color: #FCAF45;">HATS OFF</div>
+          <div style="font-size: 0.45rem; font-weight: 600; letter-spacing: 0.35em; color: rgba(245,245,245,0.6);">ANIMATION</div>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#why-us" class="nav-link">Why Us</a>
+        <a href="#what-we-do" class="nav-link">What We Do</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#impact" class="nav-link">Impact</a>
+        <a href="#contact" class="btn-gold" style="padding: 0.6rem 1.4rem;">
+          <span>Let's Talk</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <!-- Hamburger -->
+      <button class="hamburger md:hidden flex flex-col gap-1.5" id="hamburger" aria-label="Menu">
+        <span class="ham-bar"></span>
+        <span class="ham-bar"></span>
+        <span class="ham-bar"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════ MOBILE MENU ══════════════════════════ -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#why-us" class="mobile-nav-link" onclick="closeMobileMenu()">Why Work With Us</a>
+    <a href="#what-we-do" class="mobile-nav-link" onclick="closeMobileMenu()">What We Do</a>
+    <a href="#about" class="mobile-nav-link" onclick="closeMobileMenu()">About</a>
+    <a href="#impact" class="mobile-nav-link" onclick="closeMobileMenu()">Impact</a>
+    <a href="#contact" class="mobile-nav-link" onclick="closeMobileMenu()" style="color: #FCAF45;">Let's Talk →</a>
+    <div style="margin-top: 2rem; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,245,245,0.3);">...the drawing folk</div>
+  </div>
+
+  <!-- ══════════════════════════ HERO ══════════════════════════ -->
+  <section class="hero-section" id="home">
+    <!-- Background elements -->
+    <div class="spotlight-beam"></div>
+
+    <!-- Decorative background grid lines -->
+    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(252,175,69,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(252,175,69,0.04) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;"></div>
+
+    <!-- Corner decorations -->
+    <div style="position:absolute;top:120px;right:6%;width:180px;height:180px;border:1px solid rgba(252,175,69,0.12);transform:rotate(15deg);pointer-events:none;"></div>
+    <div style="position:absolute;top:140px;right:7.5%;width:180px;height:180px;border:1px solid rgba(252,175,69,0.06);transform:rotate(30deg);pointer-events:none;"></div>
+    <div style="position:absolute;bottom:80px;left:4%;width:80px;height:80px;border-left:2px solid rgba(252,175,69,0.2);border-bottom:2px solid rgba(252,175,69,0.2);pointer-events:none;"></div>
+
+    <div class="max-w-7xl mx-auto px-6 md:px-12 pt-32 pb-20 w-full">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+        <!-- Left: Copy -->
+        <div>
+          <div class="hero-label mb-6" style="animation: fadeUp 0.8s ease forwards;">
+            Kampala, Uganda → The World
+          </div>
+          <h1 class="hero-headline mb-4" style="animation: fadeUp 0.8s 0.15s ease both;">
+            The <span class="accent">Drawing</span><br/>Folk.
+          </h1>
+          <div class="gold-divider" style="animation: fadeIn 0.8s 0.3s ease both; opacity: 0; animation-fill-mode: forwards;"></div>
+          <p class="hero-tagline mt-6" style="animation: fadeUp 0.8s 0.4s ease both; opacity: 0; animation-fill-mode: forwards;">
+            We're a Kampala-based animation studio with a simple (and slightly ambitious) goal: To make world-class animation with unmistakable African soul.
+          </p>
+          <p style="font-size:1rem;font-weight:600;font-style:italic;color:rgba(252,175,69,0.85);margin-top:1.2rem;margin-bottom:2rem;animation: fadeUp 0.8s 0.5s ease both;opacity:0;animation-fill-mode:forwards;">
+            "...From Kampala to the world one frame at a time."
+          </p>
+          <div class="flex flex-wrap gap-4" style="animation: fadeUp 0.8s 0.6s ease both; opacity: 0; animation-fill-mode: forwards;">
+            <a href="#contact" class="btn-gold">
+              <span>Start A Project</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a href="#what-we-do" class="btn-outline">See Our Work</a>
+          </div>
+        </div>
+
+        <!-- Right: Large decorative type -->
+        <div class="hidden lg:flex flex-col items-end justify-center" style="animation: fadeIn 1.2s 0.3s ease both; opacity:0; animation-fill-mode: forwards;">
+          <div style="position:relative;">
+            <div style="font-size:9rem;font-weight:900;line-height:0.9;color:rgba(252,175,69,0.06);letter-spacing:-0.05em;text-align:right;user-select:none;">
+              HATS<br/>OFF
+            </div>
+            <div style="position:absolute;bottom:-20px;right:0;font-size:0.65rem;font-weight:700;letter-spacing:0.35em;color:rgba(252,175,69,0.4);text-transform:uppercase;">
+              Animation Studio
+            </div>
+          </div>
+          <!-- Mini stat blocks -->
+          <div class="flex gap-8 mt-16">
+            <div class="stat-block">
+              <div class="stat-number">2D</div>
+              <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,245,245,0.4);margin-top:0.3rem;">Animation</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-number" style="color: rgba(245,245,245,0.8);">African</div>
+              <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,245,245,0.4);margin-top:0.3rem;">Soul</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-number">Global</div>
+              <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,245,245,0.4);margin-top:0.3rem;">Reach</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="flex items-center gap-3 mt-20" style="animation: fadeIn 1.5s 1s ease both; opacity:0; animation-fill-mode: forwards;">
+        <div style="width: 40px; height: 1px; background: rgba(252,175,69,0.4);"></div>
+        <span style="font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,245,245,0.35);">Scroll to explore</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ MARQUEE ══════════════════════════ -->
+  <div style="border-top:1px solid rgba(252,175,69,0.15);border-bottom:1px solid rgba(252,175,69,0.15);padding:1rem 0;overflow:hidden;background:rgba(0,0,0,0.2);">
+    <div class="marquee-track">
+      <span class="marquee-item">2D Animation <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Storyboarding <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">African Storytelling <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Short Films <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Brand Animation <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Educational Content <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Visual Development <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">The Drawing Folk <span class="marquee-dot">✦</span></span>
+      <!-- Duplicated for seamless loop -->
+      <span class="marquee-item">2D Animation <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Storyboarding <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">African Storytelling <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Short Films <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Brand Animation <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Educational Content <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Visual Development <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">The Drawing Folk <span class="marquee-dot">✦</span></span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════ WHY WORK WITH US ══════════════════════════ -->
+  <section id="why-us" class="py-28 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto">
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-20">
+        <div class="reveal">
+          <div class="section-eyebrow">Why Work With Us</div>
+          <h2 class="section-title">Great animation<br/>isn't just talent —<br/>it's <span style="color:#FCAF45;">trust.</span></h2>
+        </div>
+        <div class="reveal reveal-delay-2 flex items-end">
+          <p style="font-size:1rem;line-height:1.9;color:rgba(245,245,245,0.65);font-weight:300;">
+            We combine the creative ambition of a studio that has something to prove with the professional reliability of partners who've earned their reputation. Here's what you get when you work with Hats Off.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <div class="value-card reveal">
+          <div class="value-number">01</div>
+          <div style="width:36px;height:36px;background:rgba(252,175,69,0.12);border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FCAF45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <h3 style="font-size:1.15rem;font-weight:800;margin-bottom:0.8rem;letter-spacing:-0.01em;">Cost-Efficient<br/>Production</h3>
+          <p style="font-size:0.88rem;line-height:1.75;color:rgba(245,245,245,0.55);font-weight:300;">High production value without unnecessary overheads. We deliver premium results that make financial sense — because great storytelling shouldn't break your budget.</p>
+        </div>
+
+        <div class="value-card reveal reveal-delay-2">
+          <div class="value-number">02</div>
+          <div style="width:36px;height:36px;background:rgba(252,175,69,0.12);border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FCAF45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg>
+          </div>
+          <h3 style="font-size:1.15rem;font-weight:800;margin-bottom:0.8rem;letter-spacing:-0.01em;">Authentic<br/>African Perspective</h3>
+          <p style="font-size:0.88rem;line-height:1.75;color:rgba(245,245,245,0.55);font-weight:300;">Fresh, original storytelling rooted in African culture but accessible worldwide. We bring stories to life that the world hasn't seen before — and can't stop watching.</p>
+        </div>
+
+        <div class="value-card reveal reveal-delay-3">
+          <div class="value-number">03</div>
+          <div style="width:36px;height:36px;background:rgba(252,175,69,0.12);border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FCAF45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3 style="font-size:1.15rem;font-weight:800;margin-bottom:0.8rem;letter-spacing:-0.01em;">Collaborative<br/>Approach</h3>
+          <p style="font-size:0.88rem;line-height:1.75;color:rgba(245,245,245,0.55);font-weight:300;">We listen, adapt, and build with you — not just for you. Fewer meetings, more animation. We're an agile studio that believes direct communication makes better art.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ WHAT WE DO ══════════════════════════ -->
+  <section id="what-we-do" style="background:linear-gradient(180deg, rgba(10,31,58,0.5) 0%, transparent 100%);padding:6rem 1.5rem;" class="md:px-12">
+    <div class="max-w-7xl mx-auto">
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+
+        <!-- Services List -->
+        <div class="reveal">
+          <div class="section-eyebrow">What We Do</div>
+          <h2 class="section-title mb-4">End-to-end<br/>animation <span style="color:#FCAF45;">services.</span></h2>
+          <p style="font-size:0.9rem;line-height:1.8;color:rgba(245,245,245,0.55);font-weight:300;margin-bottom:2.5rem;max-width:440px;">
+            We provide end-to-end animation services designed for international markets — from concept to delivery, we handle it all.
+          </p>
+
+          <div>
+            <div class="service-item">
+              <div class="service-dot"></div>
+              <div>
+                <div style="font-size:1rem;font-weight:700;margin-bottom:0.25rem;">2D Animation</div>
+                <div style="font-size:0.8rem;color:rgba(245,245,245,0.45);font-weight:300;">Frame-by-frame & cut-out production</div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-dot"></div>
+              <div>
+                <div style="font-size:1rem;font-weight:700;margin-bottom:0.25rem;">Storyboarding & Visual Development</div>
+                <div style="font-size:0.8rem;color:rgba(245,245,245,0.45);font-weight:300;">Crafting the visual language of your story</div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-dot"></div>
+              <div>
+                <div style="font-size:1rem;font-weight:700;margin-bottom:0.25rem;">Animated Series & Short Films</div>
+                <div style="font-size:0.8rem;color:rgba(245,245,245,0.45);font-weight:300;">Long-form storytelling built for global audiences</div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-dot"></div>
+              <div>
+                <div style="font-size:1rem;font-weight:700;margin-bottom:0.25rem;">Educational & Social Impact Content</div>
+                <div style="font-size:0.8rem;color:rgba(245,245,245,0.45);font-weight:300;">Animation that informs, moves, and changes minds</div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-dot"></div>
+              <div>
+                <div style="font-size:1rem;font-weight:700;margin-bottom:0.25rem;">Commercial & Brand Storytelling</div>
+                <div style="font-size:0.8rem;color:rgba(245,245,245,0.45);font-weight:300;">Bringing your brand to life, one frame at a time</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quote + Text Block -->
+        <div class="reveal reveal-delay-2">
+          <!-- Big pull quote -->
+          <div style="border-left:3px solid #FCAF45;padding-left:2rem;margin-bottom:3rem;">
+            <div style="font-size:1.45rem;font-weight:800;line-height:1.35;letter-spacing:-0.01em;font-style:italic;margin-bottom:0.8rem;">
+              "Whether it's a children's series, a public health campaign, or a bold original film — we create stories that travel."
+            </div>
+            <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:rgba(252,175,69,0.7);">Hats Off Animation</div>
+          </div>
+
+          <!-- Decorative text block -->
+          <div style="background:rgba(252,175,69,0.04);border:1px solid rgba(252,175,69,0.15);padding:2rem;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:#FCAF45;margin-bottom:1rem;">And occasionally...</div>
+            <p style="font-size:0.95rem;line-height:1.85;color:rgba(245,245,245,0.6);font-weight:300;font-style:italic;">
+              Stories that refuse to leave your head.
+            </p>
+          </div>
+
+          <!-- Partners open to -->
+          <div style="margin-top:2.5rem;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,245,245,0.4);margin-bottom:1rem;">Serving</div>
+            <div class="flex flex-wrap gap-2">
+              <span style="font-size:0.72rem;font-weight:600;padding:0.4rem 0.9rem;border:1px solid rgba(252,175,69,0.2);color:rgba(245,245,245,0.6);">Broadcasters</span>
+              <span style="font-size:0.72rem;font-weight:600;padding:0.4rem 0.9rem;border:1px solid rgba(252,175,69,0.2);color:rgba(245,245,245,0.6);">NGOs</span>
+              <span style="font-size:0.72rem;font-weight:600;padding:0.4rem 0.9rem;border:1px solid rgba(252,175,69,0.2);color:rgba(245,245,245,0.6);">Brands</span>
+              <span style="font-size:0.72rem;font-weight:600;padding:0.4rem 0.9rem;border:1px solid rgba(252,175,69,0.2);color:rgba(245,245,245,0.6);">Governments</span>
+              <span style="font-size:0.72rem;font-weight:600;padding:0.4rem 0.9rem;border:1px solid rgba(252,175,69,0.2);color:rgba(245,245,245,0.6);">Film Festivals</span>
+              <span style="font-size:0.72rem;font-weight:600;padding:0.4rem 0.9rem;border:1px solid rgba(252,175,69,0.2);color:rgba(245,245,245,0.6);">Funders</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ ABOUT / MISSION / VISION ══════════════════════════ -->
+  <section id="about" class="py-28 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto">
+
+      <!-- Who We Are -->
+      <div class="mb-20">
+        <div class="section-eyebrow reveal">Who We Are</div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          <h2 class="section-title reveal">We are artists,<br/>storytellers, and<br/><span style="color:#FCAF45;">problem-solvers.</span></h2>
+          <div class="reveal reveal-delay-2 pt-4">
+            <p style="font-size:1rem;line-height:1.9;color:rgba(245,245,245,0.65);font-weight:300;margin-bottom:1.5rem;">
+              Proudly known as <strong style="color:#FCAF45;font-weight:700;">"The Drawing Folk,"</strong> Hats Off Animation Limited was built on a belief: African animation isn't "emerging." It's ready.
+            </p>
+            <p style="font-size:0.9rem;line-height:1.85;color:rgba(245,245,245,0.5);font-weight:300;margin-bottom:2rem;">
+              We're an agile studio. That means faster decision-making, direct communication, more creativity, and less bureaucracy. Translation: fewer meetings... more actual animation.
+            </p>
+            <div class="flex gap-8">
+              <div>
+                <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,245,245,0.35);margin-bottom:0.5rem;">We tell</div>
+                <div style="font-size:0.9rem;font-weight:700;">Meaningful Stories</div>
+              </div>
+              <div>
+                <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,245,245,0.35);margin-bottom:0.5rem;">We create</div>
+                <div style="font-size:0.9rem;font-weight:700;">Youth Opportunities</div>
+              </div>
+              <div>
+                <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,245,245,0.35);margin-bottom:0.5rem;">We build</div>
+                <div style="font-size:0.9rem;font-weight:700;">Global Industry</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="hr-gold mb-20" />
+
+      <!-- Mission & Vision -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <div class="mv-card reveal">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:#FCAF45;margin-bottom:1.5rem;">Mission</div>
+          <h3 style="font-size:1.5rem;font-weight:800;line-height:1.2;letter-spacing:-0.01em;margin-bottom:1.2rem;">To provide<br/>world-class<br/>animation services.</h3>
+          <p style="font-size:0.88rem;line-height:1.85;color:rgba(245,245,245,0.55);font-weight:300;">
+            To global partners by combining resource-efficient production with unwavering professionalism. We deliver visual storytelling that is creatively distinctive, financially viable, and globally competitive.
+          </p>
+        </div>
+
+        <div class="mv-card reveal reveal-delay-2">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:#FCAF45;margin-bottom:1.5rem;">Vision</div>
+          <h3 style="font-size:1.5rem;font-weight:800;line-height:1.2;letter-spacing:-0.01em;margin-bottom:1.2rem;">To elevate African<br/>animation to<br/>global excellence.</h3>
+          <p style="font-size:0.88rem;line-height:1.85;color:rgba(245,245,245,0.55);font-weight:300;">
+            Becoming the continent's leading large-scale studio recognized for professional quality, creative innovation, and industry-dominating reliability. The continent's best. The world's next favorite.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ IMPACT ══════════════════════════ -->
+  <section id="impact" class="impact-bg py-28 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto">
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+
+        <div>
+          <div class="section-eyebrow reveal">Impact & Opportunity</div>
+          <h2 class="section-title reveal mb-6">Your project does <span style="color:#FCAF45;">good</span><br/>while looking <span style="color:#FCAF45;">very,<br/>very good.</span></h2>
+          <p class="reveal" style="font-size:0.95rem;line-height:1.9;color:rgba(245,245,245,0.6);font-weight:300;margin-bottom:2.5rem;max-width:480px;">
+            Working with us means more than completing a project. It means investing in the future of African creative industry.
+          </p>
+
+          <div class="grid grid-cols-1 gap-5">
+            <div class="open-card reveal">
+              <div style="width:40px;height:40px;background:rgba(252,175,69,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FCAF45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              </div>
+              <div>
+                <div style="font-size:0.88rem;font-weight:700;margin-bottom:0.25rem;">Supporting Africa's Animation Industry</div>
+                <div style="font-size:0.8rem;color:rgba(245,245,245,0.45);font-weight:300;">Growing the infrastructure and talent ecosystem across the continent.</div>
+              </div>
+            </div>
+            <div class="open-card reveal reveal-delay-1">
+              <div style="width:40px;height:40px;background:rgba(252,175,69,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FCAF45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </div>
+              <div>
+                <div style="font-size:0.88rem;font-weight:700;margin-bottom:0.25rem;">Creating Employment for Emerging Artists</div>
+                <div style="font-size:0.8rem;color:rgba(245,245,245,0.45);font-weight:300;">Providing livelihoods and career pathways for young African creative talent.</div>
+              </div>
+            </div>
+            <div class="open-card reveal reveal-delay-2">
+              <div style="width:40px;height:40px;background:rgba(252,175,69,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FCAF45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              </div>
+              <div>
+                <div style="font-size:0.88rem;font-weight:700;margin-bottom:0.25rem;">Bringing Underrepresented Stories to the World</div>
+                <div style="font-size:0.8rem;color:rgba(245,245,245,0.45);font-weight:300;">Giving global audiences access to narratives they've never seen — and can't look away from.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Partner callout -->
+        <div class="reveal reveal-delay-2">
+          <div style="background:rgba(5,18,35,0.7);border:1px solid rgba(252,175,69,0.2);padding:3rem;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:#FCAF45;margin-bottom:2rem;">We're Actively Open To</div>
+
+            <div class="flex flex-col gap-3 mb-8">
+              <div style="display:flex;align-items:center;gap:0.8rem;font-size:0.9rem;font-weight:600;">
+                <span style="color:#FCAF45;font-size:1.1rem;">→</span> International Client Work
+              </div>
+              <div style="display:flex;align-items:center;gap:0.8rem;font-size:0.9rem;font-weight:600;">
+                <span style="color:#FCAF45;font-size:1.1rem;">→</span> Co-Productions
+              </div>
+              <div style="display:flex;align-items:center;gap:0.8rem;font-size:0.9rem;font-weight:600;">
+                <span style="color:#FCAF45;font-size:1.1rem;">→</span> Distribution Partnerships
+              </div>
+              <div style="display:flex;align-items:center;gap:0.8rem;font-size:0.9rem;font-weight:600;">
+                <span style="color:#FCAF45;font-size:1.1rem;">→</span> Grants & Investment Opportunities
+              </div>
+            </div>
+
+            <hr class="hr-gold mb-6" />
+
+            <div style="font-size:0.85rem;line-height:1.8;color:rgba(245,245,245,0.55);font-weight:300;margin-bottom:2rem;">
+              We're especially interested in children's content, educational storytelling, social impact animation, and original African IP.
+            </div>
+
+            <div style="font-size:1rem;font-weight:800;font-style:italic;color:#FCAF45;margin-bottom:1.5rem;">
+              "Also... we're quite fun to work with."
+            </div>
+
+            <a href="#contact" class="btn-gold" style="display:inline-flex;">
+              <span>Let's Make Something</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ CONTACT FORM ══════════════════════════ -->
+  <section id="contact" class="py-28 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto">
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-20">
+
+        <!-- Left: Contact Info -->
+        <div>
+          <div class="section-eyebrow reveal">Talk To Us</div>
+          <h2 class="section-title reveal mb-6">Let's make<br/>something<br/><span style="color:#FCAF45;">unforgettable.</span></h2>
+
+          <p class="reveal" style="font-size:0.95rem;line-height:1.85;color:rgba(245,245,245,0.55);font-weight:300;margin-bottom:3rem;max-width:420px;">
+            Whether you're a broadcaster, brand, NGO, or independent filmmaker — if you're looking for a studio that blends creative authenticity, efficiency, and reliability, we should talk.
+          </p>
+
+          <div class="flex flex-col gap-6 reveal">
+            <div class="diagonal-border pl-5">
+              <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,245,245,0.35);margin-bottom:0.3rem;">Phone</div>
+              <a href="tel:+256200911416" style="font-size:1rem;font-weight:600;color:#F5F5F5;text-decoration:none;transition:color 0.3s;" onmouseover="this.style.color='#FCAF45'" onmouseout="this.style.color='#F5F5F5'">+256 200 911 416</a>
+            </div>
+            <div class="diagonal-border pl-5">
+              <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,245,245,0.35);margin-bottom:0.3rem;">WhatsApp</div>
+              <a href="https://wa.me/256792871657" target="_blank" style="font-size:1rem;font-weight:600;color:#F5F5F5;text-decoration:none;transition:color 0.3s;" onmouseover="this.style.color='#FCAF45'" onmouseout="this.style.color='#F5F5F5'">+256 792 871 657</a>
+            </div>
+            <div class="diagonal-border pl-5">
+              <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,245,245,0.35);margin-bottom:0.3rem;">Email</div>
+              <a href="mailto:info@hatsoffanimation.com" style="font-size:1rem;font-weight:600;color:#F5F5F5;text-decoration:none;transition:color 0.3s;" onmouseover="this.style.color='#FCAF45'" onmouseout="this.style.color='#F5F5F5'">info@hatsoffanimation.com</a>
+            </div>
+            <div class="diagonal-border pl-5">
+              <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,245,245,0.35);margin-bottom:0.3rem;">Location</div>
+              <div style="font-size:0.88rem;font-weight:500;color:rgba(245,245,245,0.7);line-height:1.6;">Plot 363, Dr. Lukwiya Road<br/>Balintuma A, Nakawa Division<br/>Kampala, Uganda</div>
+            </div>
+          </div>
+
+          <!-- Social -->
+          <div class="mt-10 reveal">
+            <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,245,245,0.35);margin-bottom:1rem;">Find Us Online</div>
+            <div class="flex gap-4">
+              <a href="https://instagram.com/hatsoffanimationstudio" target="_blank" style="font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(245,245,245,0.5);text-decoration:none;transition:color 0.3s;border-bottom:1px solid rgba(252,175,69,0.2);padding-bottom:2px;" onmouseover="this.style.color='#FCAF45'" onmouseout="this.style.color='rgba(245,245,245,0.5)'">Instagram</a>
+              <a href="https://linkedin.com" target="_blank" style="font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(245,245,245,0.5);text-decoration:none;transition:color 0.3s;border-bottom:1px solid rgba(252,175,69,0.2);padding-bottom:2px;" onmouseover="this.style.color='#FCAF45'" onmouseout="this.style.color='rgba(245,245,245,0.5)'">LinkedIn</a>
+              <a href="https://youtube.com" target="_blank" style="font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(245,245,245,0.5);text-decoration:none;transition:color 0.3s;border-bottom:1px solid rgba(252,175,69,0.2);padding-bottom:2px;" onmouseover="this.style.color='#FCAF45'" onmouseout="this.style.color='rgba(245,245,245,0.5)'">YouTube</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Form -->
+        <div class="reveal reveal-delay-2">
+          <form id="contactForm" style="display:flex;flex-direction:column;gap:1.5rem;" onsubmit="handleSubmit(event)">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label class="form-label">Full Name *</label>
+                <input type="text" class="form-field" name="name" placeholder="Your name" required />
+              </div>
+              <div>
+                <label class="form-label">Email Address *</label>
+                <input type="email" class="form-field" name="email" placeholder="your@email.com" required />
+              </div>
+            </div>
+
+            <div>
+              <label class="form-label">Organisation / Company</label>
+              <input type="text" class="form-field" name="organisation" placeholder="Who do you represent?" />
+            </div>
+
+            <div>
+              <label class="form-label">I'm Interested In *</label>
+              <select class="form-field" name="interest" required>
+                <option value="" disabled selected>Select an option</option>
+                <option value="client-work">Client Work / Commission</option>
+                <option value="co-production">Co-Production</option>
+                <option value="distribution">Distribution Partnership</option>
+                <option value="grant-investment">Grant / Investment</option>
+                <option value="educational">Educational Content</option>
+                <option value="brand">Brand Storytelling</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label">Your Message *</label>
+              <textarea class="form-field" name="message" rows="5" placeholder="Tell us about your project, timeline, and what you're hoping to create together..." required style="resize:vertical;min-height:140px;"></textarea>
+            </div>
+
+            <div>
+              <button type="submit" class="btn-gold" style="width:100%;justify-content:center;">
+                <span id="submitText">Send Message</span>
+                <svg id="submitArrow" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+            </div>
+
+            <!-- Success Message -->
+            <div id="formSuccess" style="display:none;background:rgba(252,175,69,0.1);border:1px solid rgba(252,175,69,0.4);padding:1.2rem;text-align:center;">
+              <div style="font-size:0.9rem;font-weight:700;color:#FCAF45;margin-bottom:0.3rem;">Message Sent!</div>
+              <div style="font-size:0.8rem;color:rgba(245,245,245,0.6);">We'll be in touch soon. In the meantime, follow us on Instagram.</div>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+  <footer class="py-12 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto">
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
+
+        <!-- Brand -->
+        <div>
+          <div style="font-size:1.3rem;font-weight:900;letter-spacing:0.05em;color:#FCAF45;margin-bottom:0.3rem;">HATS OFF</div>
+          <div style="font-size:0.55rem;font-weight:600;letter-spacing:0.4em;color:rgba(245,245,245,0.4);text-transform:uppercase;margin-bottom:1rem;">Animation</div>
+          <p style="font-size:0.8rem;line-height:1.7;color:rgba(245,245,245,0.4);max-width:220px;">...the drawing folk. From Kampala to the world, one frame at a time.</p>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:rgba(245,245,245,0.35);margin-bottom:1rem;">Get In Touch</div>
+          <div class="flex flex-col gap-2">
+            <a href="tel:+256200911416" class="footer-link">+256 200 911 416</a>
+            <a href="https://wa.me/256792871657" class="footer-link" target="_blank">WhatsApp: +256 792 871 657</a>
+            <a href="mailto:info@hatsoffanimation.com" class="footer-link">info@hatsoffanimation.com</a>
+          </div>
+        </div>
+
+        <!-- Address + Links -->
+        <div>
+          <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:rgba(245,245,245,0.35);margin-bottom:1rem;">Our Studio</div>
+          <p style="font-size:0.8rem;line-height:1.7;color:rgba(245,245,245,0.4);margin-bottom:1rem;">
+            Plot 363, Dr. Lukwiya Road<br/>
+            Balintuma A, Nakawa Division<br/>
+            Kampala, Uganda<br/>
+            P.O. Box 200787 Kampala GPO
+          </p>
+          <div class="flex gap-4">
+            <a href="https://instagram.com/hatsoffanimationstudio" target="_blank" class="footer-link">Instagram</a>
+            <a href="https://linkedin.com" target="_blank" class="footer-link">LinkedIn</a>
+            <a href="https://youtube.com" target="_blank" class="footer-link">YouTube</a>
+          </div>
+        </div>
+
+      </div>
+
+      <hr class="hr-gold mb-6" />
+
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div style="font-size:0.72rem;color:rgba(245,245,245,0.3);">
+          © <span id="currentYear"></span> Hats Off Animation Limited. All rights reserved.
+        </div>
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(252,175,69,0.5);">
+          ...the drawing folk
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════ JAVASCRIPT ══════════════════════════ -->
+  <script>
+    // ── Year ──
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // ── Nav Scroll Effect ──
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // ── Hamburger Menu ──
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+      document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+    });
+
+    function closeMobileMenu() {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // ── Scroll Reveal ──
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+
+    // ── Form Submit ──
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      const submitText = document.getElementById('submitText');
+      const submitArrow = document.getElementById('submitArrow');
+
+      // Loading state
+      submitText.textContent = 'Sending...';
+      submitArrow.style.display = 'none';
+      btn.style.opacity = '0.7';
+      btn.disabled = true;
+
+      // Simulate send (replace with your actual form handling / Formspree / etc.)
+      setTimeout(() => {
+        document.getElementById('formSuccess').style.display = 'block';
+        submitText.textContent = 'Sent ✓';
+        btn.style.opacity = '1';
+        e.target.reset();
+        setTimeout(() => {
+          submitText.textContent = 'Send Message';
+          submitArrow.style.display = '';
+          btn.disabled = false;
+          document.getElementById('formSuccess').style.display = 'none';
+        }, 5000);
+      }, 1500);
+    }
+
+    // ── Active nav link highlighting ──
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        if (window.scrollY >= sectionTop) {
+          current = section.getAttribute('id');
+        }
+      });
+      navLinks.forEach(link => {
+        link.style.color = '';
+        if (link.getAttribute('href') === `#${current}`) {
+          link.style.color = '#FCAF45';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
