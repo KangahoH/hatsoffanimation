@@ -558,10 +558,14 @@
       display: inline-block;
       animation: float 6s ease-in-out infinite;
     }
+    .nav-logo {
+      margin-left: -1rem;
+    }
 
     @media (max-width: 768px) {
       .hero-headline { font-size: clamp(2.2rem, 10vw, 3.5rem); }
       .section-title { font-size: clamp(1.8rem, 7vw, 2.5rem); }
+      .nav-logo { margin-left: -0.35rem; }
     }
   </style>
 </head>
@@ -572,16 +576,16 @@
     <div class="max-w-7xl mx-auto flex items-center justify-between">
 
       <!-- Logo -->
-      <a href="#" class="no-underline group">
+      <a href="#" class="no-underline group nav-logo">
         <img src="public/logo_120.png" alt="Hats Off Animation Logo" class="logo-icon" width="120" height="120" style="object-fit: contain; display: block;" />
       </a>
 
       <!-- Desktop Nav Links -->
       <div class="hidden md:flex items-center gap-8">
+        <a href="#about" class="nav-link">About Us</a>
+        <a href="#what-we-do" class="nav-link">What We Do</a>
         <a href="#showreels" class="nav-link">Showreels</a>
         <a href="#why-us" class="nav-link">Why Us</a>
-        <a href="#what-we-do" class="nav-link">What We Do</a>
-        <a href="#about" class="nav-link">About</a>
         <a href="#impact" class="nav-link">Impact</a>
         <a href="#contact" class="btn-gold" style="padding: 0.6rem 1.4rem;">
           <span>Let's Talk</span>
@@ -600,10 +604,10 @@
 
   <!-- ══════════════════════════ MOBILE MENU ══════════════════════════ -->
   <div class="mobile-menu" id="mobileMenu">
+    <a href="#about" class="mobile-nav-link" onclick="closeMobileMenu()">About Us</a>
+    <a href="#what-we-do" class="mobile-nav-link" onclick="closeMobileMenu()">What We Do</a>
     <a href="#showreels" class="mobile-nav-link" onclick="closeMobileMenu()">Showreels</a>
     <a href="#why-us" class="mobile-nav-link" onclick="closeMobileMenu()">Why Work With Us</a>
-    <a href="#what-we-do" class="mobile-nav-link" onclick="closeMobileMenu()">What We Do</a>
-    <a href="#about" class="mobile-nav-link" onclick="closeMobileMenu()">About</a>
     <a href="#impact" class="mobile-nav-link" onclick="closeMobileMenu()">Impact</a>
     <a href="#contact" class="mobile-nav-link" onclick="closeMobileMenu()" style="color: #FCAF45;">Let's Talk →</a>
     <div style="margin-top: 2rem; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,245,245,0.3);">...the drawing folk</div>
@@ -912,7 +916,7 @@
 
       <!-- Who We Are -->
       <div class="mb-20">
-        <div class="section-eyebrow reveal">Who We Are</div>
+        <div class="section-eyebrow reveal">About Us</div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <h2 class="section-title reveal">We are artists,<br/>storytellers, and<br/><span style="color:#FCAF45;">problem-solvers.</span></h2>
           <div class="reveal reveal-delay-2 pt-4">
@@ -1058,7 +1062,7 @@
 
         <!-- Left: Contact Info -->
         <div>
-          <div class="section-eyebrow reveal">Talk To Us</div>
+          <div class="section-eyebrow reveal">Let's Talk</div>
           <h2 class="section-title reveal mb-6">Let's make<br/>something<br/><span style="color:#FCAF45;">unforgettable.</span></h2>
 
           <p class="reveal" style="font-size:0.95rem;line-height:1.85;color:rgba(245,245,245,0.55);font-weight:300;margin-bottom:3rem;max-width:420px;">
@@ -1076,7 +1080,7 @@
             </div>
             <div class="diagonal-border pl-5">
               <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,245,245,0.35);margin-bottom:0.3rem;">Email</div>
-              <a href="mailto:info@hatsoffanimation.com" style="font-size:1rem;font-weight:600;color:#F5F5F5;text-decoration:none;transition:color 0.3s;" onmouseover="this.style.color='#FCAF45'" onmouseout="this.style.color='#F5F5F5'">info@hatsoffanimation.com</a>
+              <a href="mailto:info@heartsofanimation.com" style="font-size:1rem;font-weight:600;color:#F5F5F5;text-decoration:none;transition:color 0.3s;" onmouseover="this.style.color='#FCAF45'" onmouseout="this.style.color='#F5F5F5'">info@heartsofanimation.com</a>
             </div>
             <div class="diagonal-border pl-5">
               <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,245,245,0.35);margin-bottom:0.3rem;">Location</div>
@@ -1097,7 +1101,10 @@
 
         <!-- Right: Form -->
         <div class="reveal reveal-delay-2">
-          <form id="contactForm" style="display:flex;flex-direction:column;gap:1.5rem;" onsubmit="handleSubmit(event)">
+          <form id="contactForm" action="https://formsubmit.co/info@heartsofanimation.com" method="POST" style="display:flex;flex-direction:column;gap:1.5rem;">
+            <input type="hidden" name="_subject" value="New Let's Talk submission from heartsofanimation.com" />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" name="_captcha" value="false" />
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
@@ -1141,11 +1148,6 @@
               </button>
             </div>
 
-            <!-- Success Message -->
-            <div id="formSuccess" style="display:none;background:rgba(252,175,69,0.1);border:1px solid rgba(252,175,69,0.4);padding:1.2rem;text-align:center;">
-              <div style="font-size:0.9rem;font-weight:700;color:#FCAF45;margin-bottom:0.3rem;">Message Sent!</div>
-              <div style="font-size:0.8rem;color:rgba(245,245,245,0.6);">We'll be in touch soon. In the meantime, follow us on Instagram.</div>
-            </div>
           </form>
         </div>
 
@@ -1171,7 +1173,7 @@
           <div class="flex flex-col gap-2">
             <a href="tel:+256200911416" class="footer-link">+256 200 911 416</a>
             <a href="https://wa.me/256792871657" class="footer-link" target="_blank">WhatsApp: +256 792 871 657</a>
-            <a href="mailto:info@hatsoffanimation.com" class="footer-link">info@hatsoffanimation.com</a>
+            <a href="mailto:info@heartsofanimation.com" class="footer-link">info@heartsofanimation.com</a>
           </div>
         </div>
 
@@ -1239,6 +1241,17 @@
     }
 
     // ── Scroll Reveal ──
+    const sectionOrder = ['about', 'what-we-do', 'showreels', 'why-us', 'impact', 'contact'];
+    const pageFooter = document.querySelector('footer');
+    if (pageFooter) {
+      sectionOrder.forEach(sectionId => {
+        const section = document.getElementById(sectionId);
+        if (section) {
+          pageFooter.before(section);
+        }
+      });
+    }
+
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -1249,34 +1262,6 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
     reveals.forEach(el => observer.observe(el));
-
-    // ── Form Submit ──
-    function handleSubmit(e) {
-      e.preventDefault();
-      const btn = e.target.querySelector('button[type=submit]');
-      const submitText = document.getElementById('submitText');
-      const submitArrow = document.getElementById('submitArrow');
-
-      // Loading state
-      submitText.textContent = 'Sending...';
-      submitArrow.style.display = 'none';
-      btn.style.opacity = '0.7';
-      btn.disabled = true;
-
-      // Simulate send (replace with your actual form handling / Formspree / etc.)
-      setTimeout(() => {
-        document.getElementById('formSuccess').style.display = 'block';
-        submitText.textContent = 'Sent ✓';
-        btn.style.opacity = '1';
-        e.target.reset();
-        setTimeout(() => {
-          submitText.textContent = 'Send Message';
-          submitArrow.style.display = '';
-          btn.disabled = false;
-          document.getElementById('formSuccess').style.display = 'none';
-        }, 5000);
-      }, 1500);
-    }
 
     // ── Active nav link highlighting ──
     const sections = document.querySelectorAll('section[id]');
